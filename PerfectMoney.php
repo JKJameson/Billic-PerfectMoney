@@ -12,35 +12,13 @@ class PerfectMoney {
 		if ($billic->user['verified'] == 0 && get_config('perfectmoney_require_verification') == 1) {
 			return 'verify';
 		} else {
-			if (get_config('perfectmoney_account_eur') != '') {
-				$amount_EUR = round($billic->currency_convert(array(
-					'currency_from' => get_config('billic_currency_code') ,
-					'currency_to' => 'EUR',
-					'amount' => $params['charge'],
-				)) , 2);
-				$html.= '<form action="https://perfectmoney.is/api/step1.asp" method="POST">' . PHP_EOL;
-				$html.= '<input type="hidden" name="PAYEE_ACCOUNT" value="' . get_config('perfectmoney_account_eur') . '">' . PHP_EOL;
-				$html.= '<input type="hidden" name="PAYEE_NAME" value="' . get_config('billic_companyname') . '">' . PHP_EOL;
-				$html.= '<input type="hidden" name="PAYMENT_ID" value="' . $params['invoice']['id'] . '">' . PHP_EOL;
-				$html.= '<input type="hidden" name="PAYMENT_AMOUNT" value="' . $amount_EUR . '">' . PHP_EOL;
-				$html.= '<input type="hidden" name="PAYMENT_UNITS" value="EUR">' . PHP_EOL;
-				$html.= '<input type="hidden" name="STATUS_URL" value="http' . (get_config('billic_ssl') == 1 ? 's' : '') . '://' . get_config('billic_domain') . '/Gateway/PerfectMoney/">' . PHP_EOL;
-				$html.= '<input type="hidden" name="PAYMENT_URL" value="http' . (get_config('billic_ssl') == 1 ? 's' : '') . '://' . get_config('billic_domain') . '/User/Invoices/ID/' . $params['invoice']['id'] . '/Status/Complete/">' . PHP_EOL;
-				$html.= '<input type="hidden" name="PAYMENT_URL_METHOD" value="GET">' . PHP_EOL;
-				$html.= '<input type="hidden" name="NOPAYMENT_URL" value="http' . (get_config('billic_ssl') == 1 ? 's' : '') . '://' . get_config('billic_domain') . '/User/Invoices/ID/' . $params['invoice']['id'] . '/">' . PHP_EOL;
-				$html.= '<input type="hidden" name="NOPAYMENT_URL_METHOD" value="GET">' . PHP_EOL;
-				$html.= '<input type="hidden" name="SUGGESTED_MEMO" value="">' . PHP_EOL;
-				$html.= '<input type="hidden" name="BAGGAGE_FIELDS" value="">' . PHP_EOL;
-				$html.= '<input type="submit" class="btn btn-default" name="PAYMENT_METHOD" value="Perfect Money (EUR)">' . PHP_EOL;
-				$html.= '</form>' . PHP_EOL;
-			}
 			if (get_config('perfectmoney_account_usd') != '') {
 				$amount_USD = round($billic->currency_convert(array(
 					'currency_from' => get_config('billic_currency_code') ,
 					'currency_to' => 'USD',
 					'amount' => $params['charge'],
 				)) , 2);
-				$html.= '<form action="https://perfectmoney.is/api/step1.asp" method="POST">' . PHP_EOL;
+				$html.= '<form action="https://perfectmoney.is/api/step1.asp" method="POST" class="pm-form-USD">' . PHP_EOL;
 				$html.= '<input type="hidden" name="PAYEE_ACCOUNT" value="' . get_config('perfectmoney_account_usd') . '">' . PHP_EOL;
 				$html.= '<input type="hidden" name="PAYEE_NAME" value="' . get_config('billic_companyname') . '">' . PHP_EOL;
 				$html.= '<input type="hidden" name="PAYMENT_ID" value="' . $params['invoice']['id'] . '">' . PHP_EOL;
@@ -55,6 +33,30 @@ class PerfectMoney {
 				$html.= '<input type="hidden" name="BAGGAGE_FIELDS" value="">' . PHP_EOL;
 				$html.= '<input type="submit" class="btn btn-default" name="PAYMENT_METHOD" value="Perfect Money (USD)">' . PHP_EOL;
 				$html.= '</form>' . PHP_EOL;
+				$html.= '<style>.pm-form-USD {float:left}</style>'.PHP_EOL;
+			}
+			if (get_config('perfectmoney_account_eur') != '') {
+				$amount_EUR = round($billic->currency_convert(array(
+					'currency_from' => get_config('billic_currency_code') ,
+					'currency_to' => 'EUR',
+					'amount' => $params['charge'],
+				)) , 2);
+				$html.= '<form action="https://perfectmoney.is/api/step1.asp" method="POST" class="pm-form-EUR">' . PHP_EOL;
+				$html.= '<input type="hidden" name="PAYEE_ACCOUNT" value="' . get_config('perfectmoney_account_eur') . '">' . PHP_EOL;
+				$html.= '<input type="hidden" name="PAYEE_NAME" value="' . get_config('billic_companyname') . '">' . PHP_EOL;
+				$html.= '<input type="hidden" name="PAYMENT_ID" value="' . $params['invoice']['id'] . '">' . PHP_EOL;
+				$html.= '<input type="hidden" name="PAYMENT_AMOUNT" value="' . $amount_EUR . '">' . PHP_EOL;
+				$html.= '<input type="hidden" name="PAYMENT_UNITS" value="EUR">' . PHP_EOL;
+				$html.= '<input type="hidden" name="STATUS_URL" value="http' . (get_config('billic_ssl') == 1 ? 's' : '') . '://' . get_config('billic_domain') . '/Gateway/PerfectMoney/">' . PHP_EOL;
+				$html.= '<input type="hidden" name="PAYMENT_URL" value="http' . (get_config('billic_ssl') == 1 ? 's' : '') . '://' . get_config('billic_domain') . '/User/Invoices/ID/' . $params['invoice']['id'] . '/Status/Complete/">' . PHP_EOL;
+				$html.= '<input type="hidden" name="PAYMENT_URL_METHOD" value="GET">' . PHP_EOL;
+				$html.= '<input type="hidden" name="NOPAYMENT_URL" value="http' . (get_config('billic_ssl') == 1 ? 's' : '') . '://' . get_config('billic_domain') . '/User/Invoices/ID/' . $params['invoice']['id'] . '/">' . PHP_EOL;
+				$html.= '<input type="hidden" name="NOPAYMENT_URL_METHOD" value="GET">' . PHP_EOL;
+				$html.= '<input type="hidden" name="SUGGESTED_MEMO" value="">' . PHP_EOL;
+				$html.= '<input type="hidden" name="BAGGAGE_FIELDS" value="">' . PHP_EOL;
+				$html.= '<input type="submit" class="btn btn-default" name="PAYMENT_METHOD" value="Perfect Money (EUR)">' . PHP_EOL;
+				$html.= '</form>' . PHP_EOL;
+				$html.= '<style>.pm-form-EUR {float:left;padding-left: 20px}</style>'.PHP_EOL;
 			}
 			//$html .= '<div style="clear:both"></div>';
 			
